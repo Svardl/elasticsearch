@@ -19,6 +19,7 @@ is not easily possible: ten complex functions)?
    * Are the results clear?
 2. Are the functions just complex, or also long?
 3. What is the purpose of the functions?
+
     readHost 
     It reads tokens until there are none left. If a token is a field name  
     a variable is set to that that name. if instead the token is a start 
