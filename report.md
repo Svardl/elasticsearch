@@ -63,8 +63,8 @@ No, very little commenting w.r.t all the possible outcomes.
 | readHosts          | 91%          | 100%                     |
 | buildTraceRequest  | 50%          | 75%                      |
 | buildTraceResponse | 82%          | 100%                     |
-| SearchSortValues   | 80%          | 90% (possible dead code) |
-| writeTo            | 81%          | 92% (possible dead code) |
+| SearchSortValues   | 80%          | 90%                      |
+| writeTo            | 81%          | 92%                      |
 | merge              | 86%          | 95%                      |
 | performRequest     | 0%           | 20%                      |
 
