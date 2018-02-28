@@ -169,6 +169,8 @@ public class CollapsingTopDocsCollectorTests extends ESTestCase {
             FieldDoc fieldDoc = (FieldDoc) topDocs.scoreDocs[topDocsIndex];
             assertTrue(seen.contains(fieldDoc.fields[collapseIndex]));
         }
+	merged = collapseTopFieldDocs.merge(sort, -5, expectedNumGroups, shardHits, true);
+	assertEquals(merged, collapseTopFieldDocs);
 
 
         // check merge
