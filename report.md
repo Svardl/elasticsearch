@@ -65,8 +65,8 @@ No, very little commenting w.r.t all the possible outcomes.
 | buildTraceResponse | 82%          | 100%                     |
 | SearchSortValues   | 80%          | 90% (possible dead code) |
 | writeTo            | 81%          | 92% (possible dead code) |
-| merge              |              |                          |
-| performRequest     |              |                          |
+| merge              | 86%          | 95%                      |
+| performRequest     | 0%           | 20%                      |
 
 
 ### Test cases added:
@@ -79,8 +79,8 @@ No, very little commenting w.r.t all the possible outcomes.
 | testTraceResponse                                 | assertThat(body, equalTo(responseBody));                     |
 | createTestItem(), used in: testFromXContent() and | *new test case data:* valueSuppliers.add(() -> 'a');         |
 | createTestItem(), used in:testToXContent()        | *new test case data:* valueSuppliers.add(() -> 'a');         |
-|                                                   |                                                              |
-|                                                   |                                                              |
+| merge                                             | assertEquals(merged, collapseTopFieldDocs);        |
+| performRequest                                    | assertThat(e).isInstanceOf(validationException.class)|
 ## **Refactoring**
 
 ### Plan for refactoring complex code:
