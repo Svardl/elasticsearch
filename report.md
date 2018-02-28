@@ -12,10 +12,28 @@ Elasticsearch is a distributed RESTful search engine built for the cloud
 
 1. What are your results for the ten most complex functions? (If ranking
 is not easily possible: ten complex functions)?
+    
+   
+    
    * Did all tools/methods get the same result?
    * Are the results clear?
 2. Are the functions just complex, or also long?
 3. What is the purpose of the functions?
+
+    readHost 
+    It reads tokens until there are none left. If a token is a field name  
+    a variable is set to that that name. if instead the token is a start 
+    object the bulk of the program is run. if it's neither of these things 
+    the next token is selected. in the case of a start object if checks wheter
+    or not the field name variable has been set to "http" a new token is read 
+    while the read tokens are not end objects the httpHost is read, if a start
+    object is found it skips its children.
+    
+    Lastly if nothing could be read that is logged and null is returned. if it 
+    did read something that is returned. 
+    readHosts
+  
+  
 4. Are exceptions taken into account in the given measurements?
 5. Is the documentation clear w.r.t. all the possible outcomes?
 
