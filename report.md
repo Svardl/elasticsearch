@@ -25,8 +25,7 @@ Elasticsearch is a distributed RESTful search engine built for the cloud
 **Are the functions just complex, or also long?**
 Higher CCN seem to make the functions longer in general. Some of them are simply long if-else statements that lead to large cyclical complexity.
 
-****
-**What is the purpose of the functions?**
+### What is the purpose of the functions?
 **readHost**: It reads tokens in a .json file until there are none left. If a token is a field name, a variable is set to that that name. if instead the token is a start object the bulk of the program is run. if it's neither of these things the next token is selected. in the case of a start object if checks whether or not the field name variable has been set to "http" a new token is read while the read tokens are not end objects the httpHost is read, if a start object is found it skips its children. Lastly if nothing could be read, that is logged and null is returned. if it did read something that is returned. 
 
 **readHosts**: Tries to make an inputstream, if that fails and exception is caught and null is returned. If it succeeds it starts looking at .json tokens. If the first token. Isn’t a start object it throws an exception. If the first token is a start object it starts reading tokens until an end object is encountered. When that happens It returns what it has read. When it’s reading it makes calls to readHost to iterative .
@@ -49,15 +48,15 @@ successful or not.
 
 
 
-**Are exceptions taken into account in the given measurements?**
+### Are exceptions taken into account in the given measurements?
 Yes, they are taken into account.
 
-**Is the documentation clear w.r.t. all the possible outcomes?**
+### Is the documentation clear w.r.t. all the possible outcomes?
 No, very little commenting w.r.t all the possible outcomes.
 
 
 
-**Coverage Evaluation**
+### Coverage Evaluation
 
 | Function           | Old coverage | New coverage             |
 | ------------------ | ------------ | ------------------------ |
@@ -71,7 +70,7 @@ No, very little commenting w.r.t all the possible outcomes.
 |                    |              |                          |
 
 
-**Test cases added:**
+### Test cases added:
 
 | Function                                          | TestCase                                                     |
 | ------------------------------------------------- | ------------------------------------------------------------ |
@@ -85,7 +84,7 @@ No, very little commenting w.r.t all the possible outcomes.
 |                                                   |                                                              |
 ## **Refactoring**
 
-**Plan for refactoring complex code:**
+### Plan for refactoring complex code:
 
 **buildTraceRequest**
 Here I would make use of a template request message and not a string builder. To refactor it properly I would like to rewrite some of the functions being from which the function is being called so that the information being sent might be better formated. But overall rather well written code.
