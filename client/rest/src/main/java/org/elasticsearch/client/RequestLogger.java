@@ -37,6 +37,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.io.File;
+import java.io.PrintWriter;
+import java.lang.StringBuilder;
 
 /**
  * Helper class that exposes static methods to unify the way requests are logged.
@@ -54,7 +57,7 @@ final class RequestLogger {
     /**
      * Logs a request that yielded a response
      */
-    static void logResponse(Log logger, HttpUriRequest request, HttpHost host, HttpResponse httpResponse) {
+    static void logResponse(Log logger, HttpUriRequest request, HttpHost host, HttpResponse httpResponse) throws IOException{
         if (logger.isDebugEnabled()) {
             logger.debug("request [" + request.getMethod() + " " + host + getUri(request.getRequestLine()) +
                     "] returned [" + httpResponse.getStatusLine() + "]");
@@ -119,19 +122,30 @@ final class RequestLogger {
      * Creates curl output for given request
      */
     static String buildTraceRequest(HttpUriRequest request, HttpHost host) throws IOException {
+        File file = new File("/Users/Johan/Documents/buildTraceRequest-coverage.txt");
+        PrintWriter writer = new PrintWriter(file);
+        StringBuilder sb = new StringBuilder();
+        StringBuilder responseLine = new StringBuilder();
         String requestLine = "curl -iX " + request.getMethod() + " '" + host + getUri(request.getRequestLine()) + "'";
+        sb.append("id: 0 -> ");
         if (request instanceof  HttpEntityEnclosingRequest) {
+            sb.append("id: 1 -> ");
             HttpEntityEnclosingRequest enclosingRequest = (HttpEntityEnclosingRequest) request;
             if (enclosingRequest.getEntity() != null) {
+                sb.append("id: 2 -> ");
                 requestLine += " -d '";
                 HttpEntity entity = enclosingRequest.getEntity();
                 if (entity.isRepeatable() == false) {
+                    sb.append("id: 3 -> ");
                     entity = new BufferedHttpEntity(enclosingRequest.getEntity());
                     enclosingRequest.setEntity(entity);
                 }
                 requestLine += EntityUtils.toString(entity, StandardCharsets.UTF_8) + "'";
             }
         }
+        sb.append("id: 4");
+        writer.println(sb.toString());
+        writer.close();
         return requestLine;
     }
 
@@ -139,30 +153,43 @@ final class RequestLogger {
      * Creates curl output for given response
      */
     static String buildTraceResponse(HttpResponse httpResponse) throws IOException {
+        File file = new File("/Users/Johan/Documents/test.txt");
+        PrintWriter writer = new PrintWriter(file);
+        StringBuilder sb = new StringBuilder();
         StringBuilder responseLine = new StringBuilder();
         responseLine.append("# ").append(httpResponse.getStatusLine());
+        sb.append("id: 0 -> ");
         for (Header header : httpResponse.getAllHeaders()) {
+            sb.append("id: 1 -> ");
             responseLine.append("\n# ").append(header.getName()).append(": ").append(header.getValue());
         }
         responseLine.append("\n#");
         HttpEntity entity = httpResponse.getEntity();
         if (entity != null) {
+          sb.append("id: 2 -> ");
             if (entity.isRepeatable() == false) {
+              sb.append("id: 3 -> ");
                 entity = new BufferedHttpEntity(entity);
             }
             httpResponse.setEntity(entity);
             ContentType contentType = ContentType.get(entity);
             Charset charset = StandardCharsets.UTF_8;
             if (contentType != null && contentType.getCharset() != null) {
+                sb.append("id: 4 -> ");
                 charset = contentType.getCharset();
             }
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent(), charset))) {
+                sb.append("id: 5 -> ");
                 String line;
                 while( (line = reader.readLine()) != null) {
+                    sb.append("id: 6 -> ");
                     responseLine.append("\n# ").append(line);
                 }
             }
         }
+        sb.append("id: 7");
+        writer.println(sb.toString());
+        writer.close();
         return responseLine.toString();
     }
 
