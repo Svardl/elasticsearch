@@ -53,6 +53,7 @@ Yes, they are taken into account.
 No, very little commenting w.r.t all the possible outcomes.
 
 
+## Coverage
 
 ### Coverage Evaluation
 
