@@ -39,6 +39,14 @@ import org.elasticsearch.mocksocket.MockHttpServer;
 import org.junit.After;
 import org.junit.Before;
 
+import com.fasterxml.jackson.core.JsonFactory;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import java.io.InputStream;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
@@ -63,6 +71,7 @@ import static org.junit.Assert.fail;
 //animal-sniffer doesn't like our usage of com.sun.net.httpserver.* classes
 @IgnoreJRERequirement
 public class ElasticsearchHostsSnifferTests extends RestClientTestCase {
+    private final JsonFactory jsonFactory = new JsonFactory();
 
     private int sniffRequestTimeout;
     private ElasticsearchHostsSniffer.Scheme scheme;
@@ -114,9 +123,17 @@ public class ElasticsearchHostsSnifferTests extends RestClientTestCase {
 
     public void testSniffNodes() throws IOException {
         HttpHost httpHost = new HttpHost(httpServer.getAddress().getHostString(), httpServer.getAddress().getPort());
-        try (RestClient restClient = RestClient.builder(httpHost).build()) {
+        try (RestClient restClient = RestClient.builder(httpHost).build())
+	{
             ElasticsearchHostsSniffer sniffer = new ElasticsearchHostsSniffer(restClient, sniffRequestTimeout, scheme);
             try {
+
+                InputStream is = ElasticsearchHostsSnifferTests.class.getResourceAsStream("jay.json");
+                JsonParser parser = jsonFactory.createParser(is);
+                assertEquals( ElasticsearchHostsSniffer.readHost("yooo", parser, scheme), null);
+                assertEquals (sniffer.readHosts(null), null);
+
+
                 List<HttpHost> sniffedHosts = sniffer.sniffHosts();
                 if (sniffResponse.isFailure) {
                     fail("sniffNodes should have failed");
@@ -140,6 +157,9 @@ public class ElasticsearchHostsSnifferTests extends RestClientTestCase {
                 } else {
                     fail("sniffNodes should have succeeded: " + response.getStatusLine());
                 }
+
+
+
             }
         }
     }

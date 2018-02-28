@@ -38,12 +38,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.io.File;
+import java.io.PrintWriter;
 
 /**
  * Class responsible for sniffing the http hosts from elasticsearch through the nodes info api and returning them back.
  * Compatible with elasticsearch 5.x and 2.x.
  */
 public final class ElasticsearchHostsSniffer implements HostsSniffer {
+    static int pass=1;
+    static int coun=1;
 
     private static final Log logger = LogFactory.getLog(ElasticsearchHostsSniffer.class);
 
@@ -93,63 +97,116 @@ public final class ElasticsearchHostsSniffer implements HostsSniffer {
         Response response = restClient.performRequest("get", "/_nodes/http", sniffRequestParams);
         return readHosts(response.getEntity());
     }
+    //CCN is 8
+    public List<HttpHost> readHosts(HttpEntity entity) throws IOException {
 
-    private List<HttpHost> readHosts(HttpEntity entity) throws IOException {
-        try (InputStream inputStream = entity.getContent()) {
-            JsonParser parser = jsonFactory.createParser(inputStream);
-            if (parser.nextToken() != JsonToken.START_OBJECT) {
-                throw new IOException("expected data to start with an object");
-            }
-            List<HttpHost> hosts = new ArrayList<>();
-            while (parser.nextToken() != JsonToken.END_OBJECT) {
-                if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
-                    if ("nodes".equals(parser.getCurrentName())) {
-                        while (parser.nextToken() != JsonToken.END_OBJECT) {
-                            JsonToken token = parser.nextToken();
-                            assert token == JsonToken.START_OBJECT;
-                            String nodeId = parser.getCurrentName();
-                            HttpHost sniffedHost = readHost(nodeId, parser, this.scheme);
-                            if (sniffedHost != null) {
-                                logger.trace("adding node [" + nodeId + "]");
-                                hosts.add(sniffedHost);
+	File file = new File("C://Users//Svardl//Documents//DD2480//readHosts"+pass+".txt");
+	PrintWriter writer = new PrintWriter(file);
+	writer.println("readHosts coverage");
+	pass++;
+
+    try (InputStream inputStream = entity.getContent()) {
+        JsonParser parser = jsonFactory.createParser(inputStream);
+        if (parser.nextToken() != JsonToken.START_OBJECT) {
+            writer.println("0");
+            throw new IOException("expected data to start with an object");
+        }
+        else
+            writer.println("1");
+
+                List<HttpHost> hosts = new ArrayList<>();
+                while (parser.nextToken() != JsonToken.END_OBJECT) {
+                    writer.println("8");
+                    if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
+                        writer.println("2");
+                        if ("nodes".equals(parser.getCurrentName())) {
+                            writer.println("4");
+                            while (parser.nextToken() != JsonToken.END_OBJECT) {
+                                writer.println("5");
+                                JsonToken token = parser.nextToken();
+                                assert token == JsonToken.START_OBJECT;
+                                String nodeId = parser.getCurrentName();
+                                HttpHost sniffedHost = readHost(nodeId, parser, this.scheme);
+                                if (sniffedHost != null) {
+                                    writer.println("6");
+                                    logger.trace("adding node [" + nodeId + "]");
+                                    hosts.add(sniffedHost);
+                                }
+                               else
+                                writer.println("9");
                             }
+                        } else {
+                            writer.println("7");
+                            parser.skipChildren();
                         }
-                    } else {
-                        parser.skipChildren();
                     }
+                  else
+                    writer.println("3");
                 }
-            }
+            writer.close();
             return hosts;
+            }
+        catch(Exception e){
+
+            writer.println("10");
+            writer.close();
+            return null;
         }
     }
-
-    private static HttpHost readHost(String nodeId, JsonParser parser, Scheme scheme) throws IOException {
+    //CCN is 11
+    public static HttpHost readHost(String nodeId, JsonParser parser, Scheme scheme) throws IOException {
+	File file =new File("C://Users//Svardl//Documents//DD2480//readHost"+coun+".txt");
+	PrintWriter writer = new PrintWriter(file);
+	writer.println("readHost coverage");
+    coun++;
+        File file2 =new File("C://Users//Svardl//Documents//DD2480//hmm.txt");
+        PrintWriter writer2 = new PrintWriter(file2);
+        writer2.println("readHost coverage");
+        writer2.println(parser.getCurrentToken());
+        writer2.close();
         HttpHost httpHost = null;
         String fieldName = null;
-        while (parser.nextToken() != JsonToken.END_OBJECT) {
+        while (parser.nextToken() != JsonToken.END_OBJECT && parser.getCurrentToken()!=null) {
+		    writer.println("0");
             if (parser.getCurrentToken() == JsonToken.FIELD_NAME) {
+	        	writer.println("2");
+
                 fieldName = parser.getCurrentName();
             } else if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
+	        	writer.println("3");
                 if ("http".equals(fieldName)) {
+		            writer.println("5");
                     while (parser.nextToken() != JsonToken.END_OBJECT) {
+		            	writer.println("6");
                         if (parser.getCurrentToken() == JsonToken.VALUE_STRING && "publish_address".equals(parser.getCurrentName())) {
+			                writer.println("7");
                             URI boundAddressAsURI = URI.create(scheme + "://" + parser.getValueAsString());
                             httpHost = new HttpHost(boundAddressAsURI.getHost(), boundAddressAsURI.getPort(),
                                     boundAddressAsURI.getScheme());
                         } else if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
+                            writer.println("8");
                             parser.skipChildren();
                         }
+                        else
+                            writer.println("9");
                     }
                 } else {
+                    writer.println("4");
                     parser.skipChildren();
                 }
             }
+            else
+                writer.println("10");
         }
         //http section is not present if http is not enabled on the node, ignore such nodes
         if (httpHost == null) {
+           writer.println("1");
+            writer.close();
             logger.debug("skipping node [" + nodeId + "] with http disabled");
             return null;
         }
+	    writer.println("11");
+	    writer.close();
         return httpHost;
     }
 
