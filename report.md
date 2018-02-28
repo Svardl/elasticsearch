@@ -66,7 +66,7 @@ No, very little commenting w.r.t all the possible outcomes.
 | SearchSortValues   | 80%          | 90% (possible dead code) |
 | writeTo            | 81%          | 92% (possible dead code) |
 | merge              |              |                          |
-|                    |              |                          |
+| performRequest     |              |                          |
 
 
 ### Test cases added:
