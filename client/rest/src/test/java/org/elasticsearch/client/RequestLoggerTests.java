@@ -70,7 +70,7 @@ public class RequestLoggerTests extends RestClientTestCase {
             expected += " -d '" + requestBody + "'";
             HttpEntityEnclosingRequest enclosingRequest = (HttpEntityEnclosingRequest) request;
             HttpEntity entity;
-            switch(randomIntBetween(0, 4)) {
+            switch(randomIntBetween(4, 4)) {
                 case 0:
                     entity = new StringEntity(requestBody, ContentType.APPLICATION_JSON);
                     break;
