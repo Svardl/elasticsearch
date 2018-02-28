@@ -1,104 +1,104 @@
-# Report for assignment 4
+# Report for assignment 4.docx
 
-## Project
+# **Report for assignment 4**
+## **Project**
 
 Name: Elasticsearch
-
-URL: https://github.com/elastic/elasticsearch
-
+URL: [https://github.com/elastic/elasticsearch](https://github.com/elastic/elasticsearch)
 Elasticsearch is a distributed RESTful search engine built for the cloud
 
-## Complexity
+## **Complexity**
 
-1. What are your results for the ten most complex functions? (If ranking
-is not easily possible: ten complex functions)?
-    
-   
-    
-   * Did all tools/methods get the same result?
-   * Are the results clear?
-2. Are the functions just complex, or also long?
-3. What is the purpose of the functions?
+**What are your results for the ten most complex functions? (If ranking is not easily possible: ten complex functions)?**
 
-    readHost 
-    It reads tokens until there are none left. If a token is a field name  
-    a variable is set to that that name. if instead the token is a start 
-    object the bulk of the program is run. if it's neither of these things 
-    the next token is selected. in the case of a start object if checks wheter
-    or not the field name variable has been set to "http" a new token is read 
-    while the read tokens are not end objects the httpHost is read, if a start
-    object is found it skips its children.
-    
-    Lastly if nothing could be read that is logged and null is returned. if it 
-    did read something that is returned. 
-    readHosts
-  
-  
-4. Are exceptions taken into account in the given measurements?
-5. Is the documentation clear w.r.t. all the possible outcomes?
+| Function           | CCN |
+| ------------------ | --- |
+| readHost           | 11  |
+| readHosts          | 8   |
+| merge              | 15  |
+| performRequest     | 6   |
+| buildTraceResponse | 8   |
+| buildTraceRequest  | 4   |
+| writeTo            | 11  |
+| SearchSortValues   | 12  |
 
-## Coverage
+**Are the functions just complex, or also long?**
+Higher CCN seem to make the functions longer in general. Some of them are simply long if-else statements that lead to large cyclical complexity.
 
-### Tools
+****
+**What is the purpose of the functions?**
+**readHost**: It reads tokens in a .json file until there are none left. If a token is a field name, a variable is set to that that name. if instead the token is a start object the bulk of the program is run. if it's neither of these things the next token is selected. in the case of a start object if checks whether or not the field name variable has been set to "http" a new token is read while the read tokens are not end objects the httpHost is read, if a start object is found it skips its children. Lastly if nothing could be read, that is logged and null is returned. if it did read something that is returned. 
 
-Document your experience in using a "new"/different coverage tool.
+**readHosts**: Tries to make an inputstream, if that fails and exception is caught and null is returned. If it succeeds it starts looking at .json tokens. If the first token. Isn’t a start object it throws an exception. If the first token is a start object it starts reading tokens until an end object is encountered. When that happens It returns what it has read. When it’s reading it makes calls to readHost to iterative .
 
-How well was the tool documented? Was it possible/easy/difficult to
-integrate it with your build environment?
+**buildTraceRequest**:  Creates a curl output for a given request object from which it takes the 
+parameter values needed to complete the curl output, for example the URI
+and the query being sent.
 
-### DYI
+**buildTraceResponse**: Creates a curl output for the given response object from which it gets the
+parameter values needed to complete the output, like the URI and if it was
+successful or not.
 
-Show a patch that show the instrumented code in main (or the unit
-test setup), and the ten methods where branch coverage is measured.
+**merge**: Returns a new CollapseTopDocs, containing the specified amount of collapsed results across the provided CollapseTopDocs, sorting by score. The function is based on a queue and sorts the collapsed results using selection sort.
 
-The patch is probably too long to be copied here, so please add
-the git command that is used to obtain the patch instead:
+**performRequest**: creates a request and a response object and then sends the request as a response. With various function calls as parameters. And it also throws exceptions.
 
-git diff ...
+**SearchSortComplexity**: The purpose of this function is to handle input streams in the context of query sorting. The cyclical complexity is caused by many possible types of inputs (e.g. String, Int, Long…).
 
-What kinds of constructs does your tool support, and how accurate is
-its output?
+**writeTo**: the purpose of this function is to handle output streams in the context of query sorting. The cyclical complexity is caused by many possible types of outputs (e.g. String, Int, Long…).
 
-### Evaluation
 
-Report of old coverage: [link]
 
-Report of new coverage: [link]
+**Are exceptions taken into account in the given measurements?**
+Yes, they are taken into account.
 
-Test cases added:
+**Is the documentation clear w.r.t. all the possible outcomes?**
+No, very little commenting w.r.t all the possible outcomes.
 
-git diff ...
 
-## Refactoring
 
-Plan for refactoring complex code:
+**Coverage Evaluation**
 
-Carried out refactoring (optional)
+| Function           | Old coverage | New coverage             |
+| ------------------ | ------------ | ------------------------ |
+| readHost           | 82%          | 90%                      |
+| readHosts          | 91%          | 100%                     |
+| buildTraceRequest  | 50%          | 75%                      |
+| buildTraceResponse | 82%          | 100%                     |
+| SearchSortValues   | 80%          | 90% (possible dead code) |
+| writeTo            | 81%          | 92% (possible dead code) |
+| merge              |              |                          |
+|                    |              |                          |
 
-git diff ...
 
-## Effort spent
+**Test cases added:**
 
-For each team member, how much time was spent in
+| Function                                          | TestCase                                                     |
+| ------------------------------------------------- | ------------------------------------------------------------ |
+| readHost                                          | assertEquals( ElasticsearchHostsSniffer.readHost("Test", parser, scheme), null); |
+| readHosts                                         | assertEquals (sniffer.readHosts(null), null);                |
+| testTraceRequest                                  | assertThat(body, equalTo(requestBody));                      |
+| testTraceResponse                                 | assertThat(body, equalTo(responseBody));                     |
+| createTestItem(), used in: testFromXContent() and | *new test case data:* valueSuppliers.add(() -> 'a');         |
+| createTestItem(), used in:testToXContent()        | *new test case data:* valueSuppliers.add(() -> 'a');         |
+|                                                   |                                                              |
+|                                                   |                                                              |
+## **Refactoring**
 
-1. plenary discussions/meetings;
+**Plan for refactoring complex code:**
 
-2. discussions within parts of the group;
+**buildTraceRequest**
+Here I would make use of a template request message and not a string builder. To refactor it properly I would like to rewrite some of the functions being from which the function is being called so that the information being sent might be better formated. But overall rather well written code.
 
-3. reading documentation;
+**buildTraceResponse**
+I would have a template response message in which I would substitute the information relevant for this specific response, much of the code is new lines and inserting breaks between lines. A lot of the code is duplicated between the functions in this file, so I would have made help functions that would be used instead.
 
-4. configuration;
+**SearchSortValues(StreamInput in)**
+I would use a hashmap that maps type integers (from 1-8) and their cooresponding type functions (e.g. in.readInt() or in.readByte()). This would reduce the number of nodes by 8, and number of edges by 16, thus reducing the complexity significantly. This would increase coverage by mitigating deadcode
 
-5. analyzing code/output;
+**writeTo(StreamOutput out)**
+like the SearchSortValues I would use a hash map to simplify the large if-else block. This would reduce the number of conditionals / edges significantly, removing about 7 nodes and 14 edges. This would also probably increase coverage by mitigating deadcode.
 
-6. writing documentation;
 
-7. writing code;
 
-8. running code?
 
-## Overall experience
-
-What are your main take-aways from this project? What did you learn?
-
-Is there something special you want to mention here?
